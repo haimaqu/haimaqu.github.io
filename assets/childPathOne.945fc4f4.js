@@ -1,0 +1,1 @@
+import{f as n,g as t,F as s,y as e}from"./vendor.b7ba4a67.js";import{_ as l}from"./plugin-vue_export-helper.21dcd24c.js";const c={},o=e("br",null,null,-1),r=e("br",null,null,-1),a=e("br",null,null,-1),_=e("span",{class:"c"},"childPath One",-1);function d(i,u){return n(),t(s,null,[o,r,a,_],64)}var m=l(c,[["render",d]]);export{m as default};
