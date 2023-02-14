@@ -1,0 +1,1 @@
+import{d as t,f as n,g as o,F as s,y as e,x as a}from"./vendor.b7ba4a67.js";const r=e("br",null,null,-1),l=e("br",null,null,-1),c=a(" seniorPage "),p=t({setup(_){return(u,d)=>(n(),o(s,null,[r,l,c],64))}});export{p as default};

@@ -1,0 +1,1 @@
+import{d as t,f as s,g as n,F as o,y as e,x as a}from"./vendor.b7ba4a67.js";const l=e("br",null,null,-1),c=e("br",null,null,-1),r=a(" specialPage "),i=t({setup(_){return(u,d)=>(s(),n(o,null,[l,c,r],64))}});export{i as default};
