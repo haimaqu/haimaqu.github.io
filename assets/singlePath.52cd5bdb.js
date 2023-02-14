@@ -1,1 +1,0 @@
-import{d as t,f as n,g as s,F as o,y as e,x as a}from"./vendor.b7ba4a67.js";const l=e("br",null,null,-1),r=e("br",null,null,-1),c=a(" singlePath "),p=t({setup(_){return(u,d)=>(n(),s(o,null,[l,r,c],64))}});export{p as default};
