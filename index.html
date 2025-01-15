@@ -1,13 +1,1206 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
- 
-  </head>
-  <body>
-    666
-    
-  </body>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIPGIS学习与资源平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --primary-dark: #0088ff;
+            --accent: #ff2d55;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --background: #0a0a1f;
+            --card-bg: rgba(0, 247, 255, 0.05);
+            --gradient: linear-gradient(135deg, #0a0a1f 0%, #141432 100%);
+            --card-gradient: linear-gradient(135deg, rgba(0, 247, 255, 0.1) 0%, rgba(0, 136, 255, 0.05) 100%);
+            --btn-gradient: linear-gradient(45deg, #00f7ff, #0088ff);
+            --glow: 0 0 20px rgba(0, 247, 255, 0.3);
+            --neon-border: 1px solid rgba(0, 247, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--background);
+            overflow-x: hidden;
+        }
+
+        /* 星空背景 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: fixed;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkleStar 3s infinite, rotateStar 120s linear infinite;
+            transform-origin: 50vw 50vh;
+        }
+
+        .star.rotating {
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 0 8px #fff,
+                0 0 15px #fff,
+                0 0 20px rgba(75, 156, 211, 0.8);
+            animation: twinkleRotatingStar 4s infinite, rotateStar 120s linear infinite;
+        }
+
+        @keyframes rotateStar {
+            from { transform: rotate(0deg) translateX(var(--star-distance)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--star-distance)) rotate(-360deg); }
+        }
+
+        @keyframes twinkleStar {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 4px #fff, 0 0 8px #fff;
+            }
+            50% {
+                opacity: 0.3;
+                box-shadow: 0 0 2px #fff, 0 0 4px #fff;
+            }
+        }
+
+        @keyframes twinkleRotatingStar {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 
+                    0 0 8px #fff,
+                    0 0 15px #fff,
+                    0 0 20px rgba(75, 156, 211, 0.8);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+                box-shadow: 
+                    0 0 4px #fff,
+                    0 0 8px #fff,
+                    0 0 12px rgba(75, 156, 211, 0.5);
+            }
+        }
+
+        /* 增强的流星效果 */
+        .shooting-star {
+            position: absolute;
+            width: 300px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            animation: shoot 3s linear infinite;
+            transform: rotate(-45deg);
+            opacity: 0;
+            box-shadow: 0 0 30px var(--primary);
+            z-index: 0;
+        }
+
+        .shooting-star::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* 添加更多流星 */
+        .shooting-star:nth-child(2n) {
+            width: 400px;
+            height: 4px;
+            animation-duration: 4s;
+        }
+
+        .shooting-star:nth-child(3n) {
+            width: 200px;
+            height: 2px;
+            animation-duration: 2.5s;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(-100%) translateY(100px) rotate(-45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(200%) translateY(-200px) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        /* 地球效果 */
+        .earth {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            right: 100px;
+            top: 40%;
+            z-index: 0;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .earth-surface {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgb(45, 98, 145), rgb(0, 138, 145));
+            box-shadow: 
+                inset 0 0 40px rgba(45, 98, 145, 0.8),
+                0 0 25px rgba(0, 138, 145, 0.6);
+            animation: rotate 20s linear infinite;
+            z-index: 2;
+        }
+
+        .earth-clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%,
+                rgba(255, 255, 255, 0.6) 0%,
+                rgba(255, 255, 255, 0.3) 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: rotate 15s linear infinite reverse;
+            z-index: 3;
+        }
+
+        .earth-atmosphere {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                transparent 0%,
+                rgba(45, 98, 145, 0.4) 50%, /* 增加厚度 */
+                rgba(0, 138, 145, 0.5) 80%, /* 增加厚度 */
+                rgba(0, 138, 145, 0.2) 100%
+            );
+            filter: blur(10px); /* 增加模糊效果 */
+            z-index: 1;
+        }
+
+        /* 类土星环效果 */
+        .saturn-rings {
+            position: absolute;
+            width: 210%;
+            height: 210%;
+            top: -55%;
+            left: -55%;
+            transform-origin: center center;
+            animation: rotateRings 100s linear infinite;
+            transform-style: preserve-3d;
+            transform: rotateX(75deg);
+        }
+
+        .ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(135, 206, 255, 0.6);  /* 改为深红色 */
+            transform-style: preserve-3d;
+            box-shadow: 0 0 20px rgba(135, 206, 255, 0.4);  /* 改为深红色 */
+        }
+
+        .ring-1 { transform: scale(0.95, 0.95); }
+        /* .ring-2 { transform: scale(0.90, 0.90); } */
+        /* .ring-3 { transform: scale(0.85, 0.85); } */
+        /* .ring-4 { transform: scale(0.80, 0.80); } */
+        .ring-5 { transform: scale(0.75, 0.75); }
+        .ring-6 { transform: scale(0.70, 0.70); }
+        .ring-7 { transform: scale(0.65, 0.65); }
+        .ring-73 { transform: scale(0.67, 0.67); }
+        .ring-75 { transform: scale(0.68, 0.68); }
+
+        /* .ring-8   .ring-9    .ring-91  .ring-92 
+           这四个注释掉，就会生成一个外层的密集圆环 */
+        .ring-8 { transform: scale(0.60, 0.60); }
+        .ring-9 { transform: scale(0.55, 0.55); }
+        .ring-91 { transform: scale(0.56, 0.56); }
+        .ring-92 { transform: scale(0.57, 0.57); }
+
+
+
+
+
+
+
+
+        .ring-10 { transform: scale(0.70, 0.70); }
+        .ring-11 { transform: scale(0.70, 0.70); }
+
+        .ring-12 { transform: scale(0.75, 0.75); }
+        .ring-125 { transform: scale(0.78, 0.78); }
+        .ring-13 { transform: scale(0.70, 0.70); }
+        .ring-132 { transform: scale(0.72, 0.72); }
+        .ring-133 { transform: scale(0.73, 0.73); }
+        .ring-135 { transform: scale(0.75, 0.75); }
+      
+
+        @keyframes rotateRings {
+            from { transform: rotateX(75deg) rotate(0deg); }
+            to { transform: rotateX(75deg) rotate(360deg); }
+        }
+
+        .ring-shadow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at center,
+                transparent 70%
+            );
+            transform: scale(0.95, 0.95) translateY(5px);
+            filter: blur(5px);
+            opacity: 0.5;
+        }
+
+        /* 添加小行星带 */
+        .asteroid-belt {
+            position: absolute;
+            width: 240%;
+            height: 240%;
+            top: -70%;
+            left: -70%;
+            transform-origin: center center;
+            animation: rotateAsteroidBelt 80s linear infinite;
+            transform-style: preserve-3d;
+            opacity: 1;
+        }
+
+        @keyframes rotateAsteroidBelt {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 生成多个小行星，增加半径和动态效果 */
+        .asteroid:nth-child(1) { transform: rotate(0deg) translateX(520px) rotate(0deg) scale(1.6); animation-delay: 0s; }
+        .asteroid:nth-child(2) { transform: rotate(20deg) translateX(515px) rotate(-20deg) scale(1.3); animation-delay: 0.2s; }
+        .asteroid:nth-child(3) { transform: rotate(40deg) translateX(518px) rotate(-40deg) scale(1.5); animation-delay: 0.4s; }
+        .asteroid:nth-child(4) { transform: rotate(60deg) translateX(512px) rotate(-60deg) scale(1.2); animation-delay: 0.6s; }
+        .asteroid:nth-child(5) { transform: rotate(80deg) translateX(516px) rotate(-80deg) scale(1.4); animation-delay: 0.8s; }
+        .asteroid:nth-child(6) { transform: rotate(100deg) translateX(519px) rotate(-100deg) scale(1.6); animation-delay: 1s; }
+        .asteroid:nth-child(7) { transform: rotate(120deg) translateX(514px) rotate(-120deg) scale(1.3); animation-delay: 1.2s; }
+        .asteroid:nth-child(8) { transform: rotate(140deg) translateX(517px) rotate(-140deg) scale(1.5); animation-delay: 1.4s; }
+        .asteroid:nth-child(9) { transform: rotate(160deg) translateX(520px) rotate(-160deg) scale(1.4); animation-delay: 1.6s; }
+        .asteroid:nth-child(10) { transform: rotate(180deg) translateX(513px) rotate(-180deg) scale(1.2); animation-delay: 1.8s; }
+        .asteroid:nth-child(11) { transform: rotate(200deg) translateX(516px) rotate(-200deg) scale(1.5); animation-delay: 2s; }
+        .asteroid:nth-child(12) { transform: rotate(220deg) translateX(519px) rotate(-220deg) scale(1.3); animation-delay: 2.2s; }
+        .asteroid:nth-child(13) { transform: rotate(240deg) translateX(515px) rotate(-240deg) scale(1.6); animation-delay: 2.4s; }
+        .asteroid:nth-child(14) { transform: rotate(260deg) translateX(518px) rotate(-260deg) scale(1.4); animation-delay: 2.6s; }
+        .asteroid:nth-child(15) { transform: rotate(280deg) translateX(512px) rotate(-280deg) scale(1.5); animation-delay: 2.8s; }
+        .asteroid:nth-child(16) { transform: rotate(300deg) translateX(516px) rotate(-300deg) scale(1.3); animation-delay: 3s; }
+        .asteroid:nth-child(17) { transform: rotate(320deg) translateX(519px) rotate(-320deg) scale(1.2); animation-delay: 3.2s; }
+        .asteroid:nth-child(18) { transform: rotate(340deg) translateX(514px) rotate(-340deg) scale(1.4); animation-delay: 3.4s; }
+
+        .star.rotating-blue {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 0 10px #fff,
+                0 0 20px rgba(75, 156, 211, 1),
+                0 0 20px rgba(75, 156, 211, 0.7);
+            animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 60s linear infinite;
+        }
+
+        /* 添加更多围绕星球旋转的星星 */
+        .star.rotating-blue:nth-child(1) { right: 45%; bottom: 30%; animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 60s linear infinite; }
+        .star.rotating-blue:nth-child(2) { right: 55%; bottom: 40%; animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 65s linear infinite; }
+        .star.rotating-blue:nth-child(3) { right: 35%; bottom: 45%; animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 70s linear infinite; }
+        .star.rotating-blue:nth-child(4) { right: 50%; bottom: 50%; animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 75s linear infinite; }
+        .star.rotating-blue:nth-child(5) { right: 40%; bottom: 35%; animation: twinkleRotatingStarBlue 4s infinite, rotateAroundPlanet 80s linear infinite; }
+
+        @keyframes rotateAroundPlanet {
+            0% {
+                transform: rotate(0deg) translateX(100px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(100px) rotate(-360deg);
+            }
+        }
+
+        @keyframes twinkleRotatingStarBlue {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 
+                    0 0 10px #fff,
+                    0 0 20px rgba(75, 156, 211, 1),
+                    0 0 20px rgba(75, 156, 211, 0.7);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.3);
+                box-shadow: 
+                    0 0 15px rgba(75, 156, 211, 0.8),
+                    0 0 25px rgba(75, 156, 211, 0.5);
+            }
+        }
+
+        /* 新增星球样式 */
+        .planet-small {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .planet-small.left-top {
+            left: 50px;
+            top: 10%;
+        }
+
+        .planet-small.right-bottom {
+            width: 240px;
+            height: 240px;
+            right: 750px;
+            bottom: 5%;
+        }
+
+        .planet-small .planet-surface {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.7), rgba(245, 56, 68, 0.7));
+            box-shadow: 
+                inset 0 0 40px rgba(255, 107, 107, 0.6),
+                0 0 20px rgba(245, 56, 68, 0.3);
+            animation: rotate 20s linear infinite;
+        }
+
+        .planet-small.right-bottom .planet-surface {
+            background: linear-gradient(45deg, rgba(79, 172, 254, 0.5), rgba(0, 242, 254, 0.5));
+            box-shadow: 
+                inset 0 0 30px rgba(79, 172, 254, 0.4),
+                0 0 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .asteroid-belt-small {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            animation: rotateAsteroidBelt 60s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .asteroid-belt-small::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 107, 107, 0.15) 20%,
+                rgba(255, 107, 107, 0.25) 30%,
+                rgba(255, 107, 107, 0.35) 40%,
+                rgba(255, 107, 107, 0.4) 50%,
+                rgba(255, 107, 107, 0.35) 60%,
+                rgba(255, 107, 107, 0.25) 70%,
+                rgba(255, 107, 107, 0.15) 80%,
+                transparent 100%
+            );
+            transform: rotateX(75deg) scale(0.8, 0.15);
+            box-shadow: 
+                inset 0 0 30px rgba(255, 107, 107, 0.4),
+                0 0 20px rgba(255, 107, 107, 0.2);
+            animation: pulseAsteroidBelt 4s ease-in-out infinite;
+        }
+
+        .planet-small.right-bottom .asteroid-belt-small::before {
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(79, 172, 254, 0.1) 20%,
+                rgba(79, 172, 254, 0.15) 30%,
+                rgba(79, 172, 254, 0.2) 40%,
+                rgba(79, 172, 254, 0.25) 50%,
+                rgba(79, 172, 254, 0.2) 60%,
+                rgba(79, 172, 254, 0.15) 70%,
+                rgba(79, 172, 254, 0.1) 80%,
+                transparent 100%
+            );
+            box-shadow: 
+                inset 0 0 20px rgba(79, 172, 254, 0.3),
+                0 0 15px rgba(79, 172, 254, 0.15);
+        }
+
+        .star.rotating-red {
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 
+                0 0 6px #fff,
+                0 0 10px #fff,
+                0 0 15px rgba(255, 107, 107, 0.6);
+            animation: twinkleRotatingStarRed 4s infinite, rotateStarSmall 80s linear infinite;
+            transform-origin: 200px 150px;
+        }
+
+        .star.rotating-blue {
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 
+                0 0 4px #fff,
+                0 0 6px #fff,
+                0 0 10px rgba(79, 172, 254, 0.4);
+            animation: twinkleRotatingStarBlue 4s infinite, rotateStarSmall 80s linear infinite;
+            transform-origin: 200px 150px;
+        }
+
+        @keyframes rotateStarSmall {
+            from { transform: rotate(0deg) translateX(var(--star-distance)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--star-distance)) rotate(-360deg); }
+        }
+
+        @keyframes twinkleRotatingStarRed {
+            0%, 100% {
+                opacity: 0.9;
+                transform: scale(1);
+                box-shadow: 
+                    0 0 6px #fff,
+                    0 0 10px #fff,
+                    0 0 15px rgba(255, 107, 107, 0.6);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.3);
+                box-shadow: 
+                    0 0 3px #fff,
+                    0 0 6px #fff,
+                    0 0 8px rgba(255, 107, 107, 0.3);
+            }
+        }
+
+        @keyframes twinkleRotatingStarBlue {
+            0%, 100% {
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 
+                    0 0 4px #fff,
+                    0 0 6px #fff,
+                    0 0 10px rgba(79, 172, 254, 0.4);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(1.3);
+                box-shadow: 
+                    0 0 2px #fff,
+                    0 0 4px #fff,
+                    0 0 6px rgba(79, 172, 254, 0.2);
+            }
+        }
+
+        /* 其余样式保持不变 */
+        .header {
+            background: transparent;
+            color: var(--text);
+            text-align: center;
+            padding: 6rem 0;
+            position: relative;
+            overflow: visible;
+            z-index: 1;
+            border-bottom: var(--neon-border);
+        }
+
+        .header h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text);
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .nav {
+            background: rgba(10, 10, 31, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: var(--neon-border);
+        }
+
+        .nav.scrolled {
+            background: rgba(10, 10, 31, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 247, 255, 0.2);
+        }
+
+        .nav ul {
+            max-width: 1200px;
+            margin: 0 auto;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            padding: 0.8rem 1.2rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav a i {
+            margin-right: 8px;
+            color: var(--primary);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .nav a:hover {
+            color: var(--primary);
+            border: var(--neon-border);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--card-gradient);
+            border-radius: 8px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            border: var(--neon-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary);
+        }
+
+        .card h3 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .card p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .feature-list li {
+            margin: 1rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        .feature-list li::before {
+            content: ">";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: var(--neon-border);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: var(--btn-gradient);
+            color: var(--background);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.5);
+            border-color: transparent;
+        }
+
+        .footer {
+            background: linear-gradient(to top, rgba(10, 10, 31, 0.95), rgba(10, 10, 31, 0.8));
+            color: var(--text);
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+            border-top: var(--neon-border);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem;
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars" id="stars">
+        <!-- 原有的星星 -->
+        <div class="star" style="--star-distance: 10vw; --duration: 1s; top: 5%; left: 10%;"></div>
+        <div class="star" style="--star-distance: 15vw; --duration: 2s; top: 15%; left: 20%;"></div>
+        <div class="star" style="--star-distance: 20vw; --duration: 1.5s; top: 25%; left: 30%;"></div>
+        <div class="star" style="--star-distance: 25vw; --duration: 2.5s; top: 35%; left: 40%;"></div>
+        <div class="star" style="--star-distance: 30vw; --duration: 1.8s; top: 45%; left: 50%;"></div>
+        <div class="star" style="--star-distance: 35vw; --duration: 2.2s; top: 55%; left: 60%;"></div>
+        <div class="star" style="--star-distance: 40vw; --duration: 1.7s; top: 65%; left: 70%;"></div>
+        <div class="star" style="--star-distance: 45vw; --duration: 2.3s; top: 75%; left: 80%;"></div>
+        <div class="star" style="--star-distance: 50vw; --duration: 1.9s; top: 85%; left: 90%;"></div>
+        
+        <!-- 添加跟随小行星带旋转的星星 -->
+        <div class="star rotating" style="--star-distance: 38vw; top: 30%; left: 45%;"></div>
+        <div class="star rotating" style="--star-distance: 42vw; top: 35%; left: 55%;"></div>
+        <div class="star rotating" style="--star-distance: 40vw; top: 40%; left: 50%;"></div>
+        <div class="star rotating" style="--star-distance: 44vw; top: 45%; left: 60%;"></div>
+        <div class="star rotating" style="--star-distance: 41vw; top: 50%; left: 48%;"></div>
+        <div class="star rotating" style="--star-distance: 43vw; top: 55%; left: 52%;"></div>
+        <div class="star rotating" style="--star-distance: 39vw; top: 60%; left: 47%;"></div>
+        <div class="star rotating" style="--star-distance: 45vw; top: 65%; left: 53%;"></div>
+        <div class="star rotating" style="--star-distance: 37vw; top: 40%; left: 58%;"></div>
+        <div class="star rotating" style="--star-distance: 46vw; top: 45%; left: 43%;"></div>
+        <div class="star rotating" style="--star-distance: 36vw; top: 50%; left: 57%;"></div>
+        <div class="star rotating" style="--star-distance: 47vw; top: 55%; left: 42%;"></div>
+        <div class="star rotating" style="--star-distance: 35vw; top: 60%; left: 56%;"></div>
+        <div class="star rotating" style="--star-distance: 48vw; top: 65%; left: 41%;"></div>
+        <div class="star rotating" style="--star-distance: 34vw; top: 35%; left: 59%;"></div>
+    </div>
+    <div class="earth">
+        <div class="earth-surface"></div>
+        <div class="earth-clouds"></div>
+        <div class="earth-atmosphere"></div>
+        <div class="saturn-rings">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="ring ring-4"></div>
+            <div class="ring ring-5"></div>
+            <div class="ring ring-6"></div>
+            
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-7"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+            <div class="ring ring-73"></div>
+
+            
+
+
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+            <div class="ring ring-75"></div>
+
+
+            <!-- .ring-8   .ring-9    .ring-91  .ring-92
+            这四个注释掉，就会移除最内部的圆环
+              -->
+            <div class="ring ring-8"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-9"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-91"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+            <div class="ring ring-92"></div>
+
+
+
+
+
+            <div class="ring ring-10"></div>
+            <div class="ring ring-11"></div>
+            <div class="ring ring-11"></div>
+            <div class="ring ring-11"></div>
+
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+            <div class="ring ring-12"></div>
+
+            
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+            <div class="ring ring-125"></div>
+
+
+
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-13"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-132"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+            <div class="ring ring-133"></div>
+
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+            <div class="ring ring-135"></div>
+
+            <div class="ring-shadow"></div>
+        </div>
+        <div class="asteroid-belt">
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+            <div class="asteroid"></div>
+        </div>
+        <div class="earth-asteroid-belt">
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+            <div class="earth-asteroid"></div>
+        </div>
+    </div>
+    <div class="shooting-star" style="animation-delay: 0s;"></div>
+    <div class="shooting-star" style="animation-delay: 1s;"></div>
+    <div class="shooting-star" style="animation-delay: 2s;"></div>
+    <div class="shooting-star" style="animation-delay: 3s;"></div>
+    <div class="shooting-star" style="animation-delay: 4s;"></div>
+    <div class="shooting-star" style="animation-delay: 5s;"></div>
+
+    <!-- 新增星球 -->
+    <div class="planet-small left-top">
+        <div class="planet-surface"></div>
+        <div class="asteroid-belt-small">
+            <!-- 小行星带周围的星星 - 红色系 -->
+            <div class="star rotating-red" style="--star-distance: 20vw; top: 30%; left: 45%;"></div>
+            <div class="star rotating-red" style="--star-distance: 22vw; top: 35%; left: 55%;"></div>
+            <div class="star rotating-red" style="--star-distance: 21vw; top: 40%; left: 50%;"></div>
+            <div class="star rotating-red" style="--star-distance: 23vw; top: 45%; left: 60%;"></div>
+            <div class="star rotating-red" style="--star-distance: 19vw; top: 50%; left: 48%;"></div>
+            <div class="star rotating-red" style="--star-distance: 24vw; top: 55%; left: 52%;"></div>
+            <div class="star rotating-red" style="--star-distance: 18vw; top: 60%; left: 47%;"></div>
+            <div class="star rotating-red" style="--star-distance: 25vw; top: 65%; left: 53%;"></div>
+        </div>
+    </div>
+
+    <div class="planet-small right-bottom">
+        <div class="planet-surface"></div>
+        <div class="asteroid-belt-small">
+            <!-- 小行星带周围的星星 - 蓝色系 -->
+            <div class="star rotating-blue" style="--star-distance: 20vw; top: 30%; left: 45%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 22vw; top: 35%; left: 55%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 21vw; top: 40%; left: 50%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 23vw; top: 45%; left: 60%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 19vw; top: 50%; left: 48%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 24vw; top: 55%; left: 52%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 18vw; top: 60%; left: 47%;"></div>
+            <div class="star rotating-blue" style="--star-distance: 25vw; top: 65%; left: 53%;"></div>
+        </div>
+    </div>
+
+    <header class="header">
+        <h1>GIS学习与资源平台</h1>
+        <p>探索地理信息的无限可能，让数据可视化与空间分析激发你的创造力</p>
+    </header>
+
+    <nav class="nav">
+        <ul>
+            <li><a href="#tutorials"><i class="fas fa-microchip"></i> 学习教程</a></li>
+            <li><a href="#resources"><i class="fas fa-atom"></i> 资源下载</a></li>
+            <li><a href="http://115.190.100.168/notes" target="_blank"><i class="fas fa-brain"></i> 笔记记录</a></li>
+            <li><a href="#community"><i class="fas fa-network-wired"></i> 社区交流</a></li>
+        </ul>
+    </nav>
+
+    <main class="main">
+        <section id="tutorials" class="section-grid">
+            <div class="card">
+                <i class="fas fa-globe-asia card-icon"></i>
+                <h3>二维GIS教程</h3>
+                <p>从基础到进阶的二维GIS技术学习之旅</p>
+                <ul class="feature-list">
+                    <li>地图制图基础</li>
+                    <li>空间分析技术</li>
+                    <li>矢量数据处理</li>
+                </ul>
+                <a href="#" class="btn">开始探索</a>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-vr-cardboard card-icon"></i>
+                <h3>三维GIS教程</h3>
+                <p>探索三维空间的无限可能</p>
+                <ul class="feature-list">
+                    <li>3D建模技术</li>
+                    <li>地形分析</li>
+                    <li>三维场景构建</li>
+                </ul>
+                <a href="http://115.190.100.168/admin" target="_blank" class="btn">立即起航</a>
+                <!-- <a href="admin" class="btn">立即起航</a> -->
+            </div>
+
+            <div class="card">
+                <i class="fas fa-database card-icon"></i>
+                <h3>资源中心</h3>
+                <p>海量优质资源，助力学习腾飞</p>
+                <ul class="feature-list">
+                    <li>开源GIS软件</li>
+                    <li>示例数据集</li>
+                    <li>项目源码库</li>
+                </ul>
+                <a href="#" class="btn">探索资源</a>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-robot card-icon"></i>
+                <h3>知识星球</h3>
+                <p>记录学习轨迹，分享技术心得</p>
+                <ul class="feature-list">
+                    <li>智能笔记系统</li>
+                    <li>知识图谱构建</li>
+                    <li>学习进度追踪</li>
+                </ul>
+                <a href="#" class="btn">开启旅程</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p> 2025 GIS学习与资源平台 - 探索地理信息的无限星空</p>
+        <br/>
+
+
+        <!-- <p>
+            VIPGIS学习与资源平台   浙ICP备14010061号-2  公安备案 鄂公网安备 42011102000237号
+        </p> -->
+
+
+        
+        <!-- <p>
+            备案序号：皖ICP备2025073461号 皖公网安备 34011102000822号 网站标识码：3400000066
+        </p> -->
+<!-- 
+        <p>
+          <span ><a  style="color: #FFFFFF;font-family: 微软雅黑;" href="https://beian.miit.gov.cn/" target="_blank">备案序号：皖ICP备2025073461号</a></span>
+        </p> -->
+
+    </footer>
+
+    <script>
+
+
+
+        // 创建星空背景
+        function createStars() {
+            const stars = document.getElementById('stars');
+            const count = 200;
+            
+            for(let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 3;
+                const duration = 3 + Math.random() * 3;
+                const opacity = 0.3 + Math.random() * 0.7;
+                
+                star.style.cssText = `
+                    left: ${x}%;
+                    top: ${y}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    --duration: ${duration}s;
+                    --opacity: ${opacity};
+                `;
+                
+                stars.appendChild(star);
+            }
+        }
+
+        // 页面滚动效果
+        function handleScroll() {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            window.addEventListener('scroll', handleScroll);
+        });
+    </script>
+</body>
 </html>
